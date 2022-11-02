@@ -10,6 +10,12 @@ namespace English_Learn
     {
         Model model;
         Form1 learnEnglish;
+
+        const int MAX_ATTEMPT = 3;
+        const int LOSE = 0;
+        static int counter = MAX_ATTEMPT;
+        static int score = 0;
+
         public Presenter(Form1 learn)
         {
             model = new Model();
@@ -24,15 +30,29 @@ namespace English_Learn
 
             bool result = model.CheckBox(learnEnglish.textBox1.Text);
             string line;
+
             if (result)
             {
                 learnEnglish.label2.ForeColor = System.Drawing.Color.Green;
                 line = "Great";
+                score++;
+                learnEnglish.label6.Text = score.ToString();
+                LearnEnglish_NextWord(sender, e);
             }
             else
             {
                 learnEnglish.label2.ForeColor = System.Drawing.Color.Red;
                 line = "Awful";
+
+                counter--;
+                learnEnglish.label3.Text = counter.ToString();
+                if (counter == LOSE)
+                {
+                    learnEnglish.label2.ForeColor = System.Drawing.Color.Red;
+                    learnEnglish.label2.BackColor = System.Drawing.Color.Black;
+                    line = "YOU LOSE";
+                    learnEnglish.button2.Enabled = false;
+                }
             }
 
             learnEnglish.label2.Text = line;
@@ -41,6 +61,7 @@ namespace English_Learn
         public void LearnEnglish_NextWord(object sender, EventArgs e)
         {
             string text = model.NextWord();
+            learnEnglish.textBox1.Text = null;
             learnEnglish.label1.Text = text;
         }
     }
